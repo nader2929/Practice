@@ -125,10 +125,7 @@ void convert_number(long num){
         printf("Minus ");
     }
 
-    long order_of_magnitudes_count[6];
-
     long billion_remainder = num / 1000000000;
-    order_of_magnitudes_count[0] = billion_remainder;
     if(billion_remainder > 0)
     {
         remainder_text(billion_remainder);
@@ -136,7 +133,6 @@ void convert_number(long num){
     }
 
     long million_remainder = (num - (billion_remainder*1000000000)) / 1000000;
-    order_of_magnitudes_count[1] = million_remainder;
     if(million_remainder > 0)
     {
         remainder_text(million_remainder);
@@ -144,7 +140,6 @@ void convert_number(long num){
     }
 
     long thousand_remainder = (num - (billion_remainder*1000000000) - (million_remainder*1000000)) / 1000;
-    order_of_magnitudes_count[2] = thousand_remainder;
     if(thousand_remainder > 0)
     {
         remainder_text(thousand_remainder);
@@ -152,7 +147,6 @@ void convert_number(long num){
     }
 
     long hundred_remainder = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000)) / 100;
-    order_of_magnitudes_count[3] = hundred_remainder;
     if(hundred_remainder > 0)
     {
         one_to_nineteen_to_text(hundred_remainder);
@@ -160,14 +154,12 @@ void convert_number(long num){
     }
 
     long tens_remainder = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000) - (hundred_remainder*100)) / 10;
-    order_of_magnitudes_count[4] = tens_remainder;
     if(tens_remainder > 1)
     {
         tens_to_text(tens_remainder);        
     }
 
     long single_digit = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000) - (hundred_remainder*100));
-    order_of_magnitudes_count[5] = single_digit;
     if(single_digit > 0)
     {
         if (single_digit > 19) {
