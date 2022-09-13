@@ -1,117 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void one_to_nineteen_to_text(long number){
-    switch (number)
-    {
-        case 1:
-            printf("One");
-            break;
-        case 2:
-            printf("Two");
-            break;
-        case 3:
-            printf("Three");
-            break;
-        case 4:
-            printf("Four");
-            break;
-        case 5:
-            printf("Five");
-            break;
-        case 6:
-            printf("Six");
-            break;
-        case 7:
-            printf("Seven");
-            break;
-        case 8:
-            printf("Eight");
-            break;
-        case 9:
-            printf("Nine");
-            break;
-        case 10:
-            printf("Ten");
-            break;
-        case 11:
-            printf("Eleven");
-            break;
-        case 12:
-            printf("Twelve");
-            break;
-        case 13:
-            printf("Thirteen");
-            break;
-        case 14:
-            printf("Fourteen");
-            break;
-        case 15:
-            printf("Fifteen");
-            break;
-        case 16:
-            printf("Sixteen");
-            break;
-        case 17:
-            printf("Seventeen");
-            break;
-        case 18:
-            printf("Eighteen");
-            break;
-        case 19:
-            printf("Nineteen");
-            break;
-        default:
-            break;
-    }
-}
+char one_to_nineteen_to_text[20][20] = {
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen"
+};
 
-void tens_to_text(long number){
-    switch (number)
-    {
-        case 2:
-            printf("Twenty");
-            break;
-        case 3:
-            printf("Thirty");
-            break;
-        case 4:
-            printf("Forty");
-            break;
-        case 5:
-            printf("Fifty");
-            break;
-        case 6:
-            printf("Sixty");
-            break;
-        case 7:
-            printf("Seventy");
-            break;
-        case 8:
-            printf("Eighty");
-            break;
-        case 9:
-            printf("Ninety");
-            break;
-        default:
-            break;
-    }
-}
+char tens_to_text[10][7] = {
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety"
+};
 
 void remainder_text(long number){
     long number_hundreds = number / 100;
     long number_tens = (number - (number_hundreds*100)) / 10;
     long number_digits = number - (number_hundreds*100) - (number_tens * 10);
-    one_to_nineteen_to_text(number_hundreds);
+    printf("%s", one_to_nineteen_to_text[number_hundreds]);
     if (number_hundreds > 0) printf(" Hundred ");
-    if (number_tens > 1) tens_to_text(number_tens);
+    if (number_tens > 1) printf("%s", tens_to_text[number_tens]);
     else if (number_tens == 1 && number_digits > 0){
-        one_to_nineteen_to_text(number_digits+10);
+        printf("%s", one_to_nineteen_to_text[number_digits+10]);
     }
 
     if (number_tens != 1 && number_digits > 0) {
         printf(" ");
-        one_to_nineteen_to_text(number_digits);
+        printf("%s", one_to_nineteen_to_text[number_digits]);
     }
 }
 
@@ -149,14 +88,14 @@ void convert_number(long num){
     long hundred_remainder = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000)) / 100;
     if(hundred_remainder > 0)
     {
-        one_to_nineteen_to_text(hundred_remainder);
+        printf("%s", one_to_nineteen_to_text[hundred_remainder]);
         printf(" Hundred ");
     }
 
     long tens_remainder = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000) - (hundred_remainder*100)) / 10;
     if(tens_remainder > 1)
     {
-        tens_to_text(tens_remainder);        
+        printf("%s", tens_to_text[tens_remainder]);
     }
 
     long single_digit = (num - (billion_remainder*1000000000) - (million_remainder*1000000) - (thousand_remainder*1000) - (hundred_remainder*100));
@@ -166,7 +105,7 @@ void convert_number(long num){
             single_digit = single_digit - (tens_remainder*10);
             printf(" ");
         }
-        one_to_nineteen_to_text(single_digit);        
+        printf("%s", one_to_nineteen_to_text[single_digit]);
     }
 
     if(tens_remainder == 1 && single_digit == 0){
