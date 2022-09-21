@@ -6,7 +6,7 @@ RM      = rm -f
 
 default: all
 
-all: num_to_text matrix_multiplication parallel_matrix_multiplication
+all: num_to_text matrix_multiplication parallel_matrix_multiplication gaussian_blur
 
 num_to_text: num_to_text.c
 	$(CC) num_to_text.c $(CFLAGS) -o bin/num_to_text
