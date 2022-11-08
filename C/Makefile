@@ -20,5 +20,8 @@ parallel_matrix_multiplication: parallel_matrix_multiplication.c
 gaussian_blur: gaussian_blur.c
 	$(CC) gaussian_blur.c $(CFLAGS) -o bin/gaussian_blur
 
+recursive_file_extractor: recursive_file_extractor.c
+	$(CC) recursive_file_extractor.c $(CFLAGS) -o bin/recursive_file_extractor
+
 clean veryclean:
 	$(RM) bin/num_to_text bin/matrix_multiplication bin/parallel_matrix_multiplication
