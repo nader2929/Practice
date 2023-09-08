@@ -1,4 +1,5 @@
 #include <chrono>
+#include <thread>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -102,12 +103,14 @@ int main(int argc, char **argv) {
         }
     }
     t2 = std::chrono::high_resolution_clock::now();
-    printf("The multiplication took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
+    long executionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+    printf("The multiplication took: %ld ms\n", executionTime);
 
     if(cmdArgs.debugMode){
         printf("Result matrix (C):\n");
         printMatrix(c, rs, rs);
     }
+    printf("\nCPUs,ms\n%d,%ld\n", cmdArgs.cpus, executionTime);
     printf("\n");
     return 0;
 }
