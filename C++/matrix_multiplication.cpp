@@ -1,3 +1,4 @@
+#include <chrono>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
     printf("Result matrix C - Rows: %d, Columns: %d\n", rs, rs);
     printf("\n");
 
+    auto t1 = std::chrono::high_resolution_clock::now();
     int **a = new int*[aRows];
     for(int y = 0; y < aRows; y++){
         a[y] = new int[aColumns];
@@ -60,7 +62,10 @@ int main(int argc, char **argv) {
             a[y][x] = rand() % max + 1;
         }
     }
-    
+    auto t2 = std::chrono::high_resolution_clock::now();
+    printf("Initializing A took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
+
+    t1 = std::chrono::high_resolution_clock::now();
     int **b = new int*[bRows];
     for(int y = 0; y < bRows; y++){
         b[y] = new int[bColumns];
@@ -68,6 +73,8 @@ int main(int argc, char **argv) {
             b[y][x] = rand() % max + 1;
         }
     }
+    t2 = std::chrono::high_resolution_clock::now();
+    printf("Initializing B took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
     if(cmdArgs.debugMode){
         printf("Matrix A:\n");
@@ -76,11 +83,15 @@ int main(int argc, char **argv) {
         printMatrix(b, bRows, bColumns);
     }
 
+    t1 = std::chrono::high_resolution_clock::now();
     int **c = new int*[rs];
     for(int x = 0; x < rs; x++){
         c[x] = new int[rs];
     }
+    t2 = std::chrono::high_resolution_clock::now();
+    printf("Initializing C took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
+    t1 = std::chrono::high_resolution_clock::now();
     for(int y = 0; y < rs; y++){
         for(int x = 0; x < rs; x++){
             int sum = 0;
@@ -90,6 +101,8 @@ int main(int argc, char **argv) {
             c[y][x] = sum;
         }
     }
+    t2 = std::chrono::high_resolution_clock::now();
+    printf("The multiplication took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
     if(cmdArgs.debugMode){
         printf("Result matrix (C):\n");
