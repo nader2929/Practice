@@ -32,7 +32,7 @@ CmdArguments getCmdArguements(int argc, char **argv){
                 cout << "\tERROR: Cannot convert given value for size of X axis\n";
                 exit(-1);
             }
-        } else if (arg == "--cols"|| arg == "-c") {
+        } else if (arg == "--cols" || arg == "-c") {
             try{
                 cmdArgs.cols = stoi(value);
             }
@@ -40,7 +40,25 @@ CmdArguments getCmdArguements(int argc, char **argv){
                 cout << "\tERROR: Cannot convert given value for size of Y axis\n";
                 exit(-1);
             }
-        } else if(arg == "--help" || arg == "-h"){ 
+        } 
+        else if (arg == "--debug" || arg == "-d" || arg == "-g") {
+            try{
+                if(value == "1" || value == "true" || value == "True" || value == "T" || value == "t"){
+                    cmdArgs.debugMode = true;
+                }
+                else if(value == "0" || value == "false" || value == "False" || value == "F" || value == "f"){
+                    cmdArgs.debugMode = false;
+                }
+                else{
+                    throw exception();
+                }
+            }
+            catch(const exception& e){
+                cout << "\tERROR: Unknown value given for debug mode\n";
+                exit(-1);
+            }
+        }
+        else if(arg == "--help" || arg == "-h"){ 
             cout << R"(
 options:
     -h, --help            show this help message and exit

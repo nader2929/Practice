@@ -38,53 +38,63 @@ int main(int argc, char **argv) {
     int aRows = cmdArgs.rows;
     int aColumns = cmdArgs.cols;
 
-    int **a = new int*[aRows];
-    for(int x = 0; x < aColumns; x++){
-        a[x] = new int[aColumns];
-        for(int y = 0; y < aColumns; y++){
-            a[x][y] = rand() % max + 1;
-        }
-    }
-
     int bRows = cmdArgs.cols;
     int bColumns = cmdArgs.rows;
-    
-    int **b = new int*[bRows];
-    for(int x = 0; x < bRows; x++){
-        b[x] = new int[bColumns];
-        for(int y = 0; y < bColumns; y++){
-            b[x][y] = rand() % max + 1;
-        }
-    }
 
-    printf("A - Rows: %d, Columns: %d\n", aRows, aColumns);
-    printMatrix(a, aRows, aColumns);
-    printf("B - Rows: %d, Columns: %d\n", bRows, bColumns);
-    printMatrix(b, bRows, bColumns);
+    int rs = aRows; //Result Size
 
     if(aRows != bColumns){
         printf("Cannot multiply matrixes when matrix A rows are not equal to B rows.\n");
-        return 0;
+        return -1;
     }
 
-    int rs = aRows; //Result Size
+    printf("A - Rows: %d, Columns: %d\n", aRows, aColumns);
+    printf("B - Rows: %d, Columns: %d\n", bRows, bColumns);
+    printf("Result matrix C - Rows: %d, Columns: %d\n", rs, rs);
+    printf("\n");
+
+    int **a = new int*[aRows];
+    for(int y = 0; y < aRows; y++){
+        a[y] = new int[aColumns];
+        for(int x = 0; x < aColumns; x++){
+            a[y][x] = rand() % max + 1;
+        }
+    }
+    
+    int **b = new int*[bRows];
+    for(int y = 0; y < bRows; y++){
+        b[y] = new int[bColumns];
+        for(int x = 0; x < bColumns; x++){
+            b[y][x] = rand() % max + 1;
+        }
+    }
+
+    if(cmdArgs.debugMode){
+        printf("Matrix A:\n");
+        printMatrix(a, aRows, aColumns);
+        printf("Matrix B:\n");
+        printMatrix(b, bRows, bColumns);
+    }
+
     int **c = new int*[rs];
     for(int x = 0; x < rs; x++){
         c[x] = new int[rs];
     }
 
-    for(int x = 0; x < rs; x++){
-        for(int y = 0; y < rs; y++){
+    for(int y = 0; y < rs; y++){
+        for(int x = 0; x < rs; x++){
             int sum = 0;
             for(int z = 0; z < aColumns; z++){
-                sum += a[x][z] * b[z][y];
+                sum += a[y][z] * b[z][x];
             }
-            c[x][y] = sum;
+            c[y][x] = sum;
         }
     }
 
-    printf("Result matrix (C):\n");
-    printMatrix(c, rs, rs);
+    if(cmdArgs.debugMode){
+        printf("Result matrix (C):\n");
+        printMatrix(c, rs, rs);
+    }
     printf("\n");
     return 0;
 }
