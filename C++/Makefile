@@ -19,7 +19,7 @@ matrix_multiplication: matrix_multiplication.cpp
 
 thread_matrix_multiplication: thread_matrix_multiplication.cpp
 	$(BIN_FOLDER)
-	$(CC) thread_matrix_multiplication.cpp $(HELPERS_FOLDER) $(CFLAGS) -o bin/thread_matrix_multiplication
+	$(CC) thread_matrix_multiplication.cpp $(HELPERS_FOLDER) $(CFLAGS) -pthread -o bin/thread_matrix_multiplication
 
 gaussian_blur: gaussian_blur.cpp
 	$(BIN_FOLDER)

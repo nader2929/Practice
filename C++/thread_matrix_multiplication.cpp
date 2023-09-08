@@ -5,6 +5,16 @@
 #include <iostream>
 #include "helpers/CmdArguements.h"
 
+int **a; // Matrix A
+int aRows; // No. rows in Matrix A
+int aColumns; // No. columns in Matrix A
+int **b; // Matrix B
+int bRows; // No. rows in Matrix B
+int bColumns; // No. columns in Matrix B
+int **c; // Result Matrix C
+int rs; //Result Matrix Size (Result matrix is always a square)
+CmdArguments cmdArgs;
+
 void printMatrix(int **matrix, int rows, int cols){
     for(int y = 0; y < rows; y++){
         for(int x = 0; x < cols; x++){
@@ -26,24 +36,58 @@ void printMatrix(int **matrix, int rows, int cols){
     printf("\n");
 }
 
+void matrixMultiply(int threadId, int numOfThreads){
+    auto t1 = std::chrono::high_resolution_clock::now();
+    int startRow = 0;
+    int endRow = rs;
+    for(int y = startRow; y < endRow; y++){
+        for(int x = 0; x < rs; x++){
+            int sum = 0;
+            for(int z = 0; z < aColumns; z++){
+                sum += a[y][z] * b[z][x];
+            }
+            c[y][x] = sum;
+        }
+    }
+    auto t2 = std::chrono::high_resolution_clock::now();
+    long threadExecutionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+    printf("The multiplication took: %ld ms on thread %d of %d\n", threadExecutionTime, threadId, numOfThreads);
+}
+
+void threadReportForAction(int threadId){
+    printf("Thread %d reporting for action!\n", threadId);
+}
+
+
 int main(int argc, char **argv) {
-    CmdArguments cmdArgs = getCmdArguements(argc, argv);
+    cmdArgs = getCmdArguements(argc, argv);
 
     int max = cmdArgs.rows;
     if(cmdArgs.cols > max){
         max = cmdArgs.cols;
     }
 
+    std::thread thead_array[cmdArgs.cpus];
+    // if(cmdArgs.debugMode){
+    //     for(int p = 0; p < cmdArgs.cpus; p++){
+    //         thead_array[p] = std::thread(threadReportForAction, p);
+    //     }
+    //     for(int p = 0; p < cmdArgs.cpus; p++){
+    //         thead_array[p].join();
+    //     }
+    // }
+
     /* initialize random seed: */
-    srand (time(NULL));
+    // srand (time(NULL));
+    srand (42);
 
-    int aRows = cmdArgs.rows;
-    int aColumns = cmdArgs.cols;
+    aRows = cmdArgs.rows;
+    aColumns = cmdArgs.cols;
 
-    int bRows = cmdArgs.cols;
-    int bColumns = cmdArgs.rows;
+    bRows = cmdArgs.cols;
+    bColumns = cmdArgs.rows;
 
-    int rs = aRows; //Result Size
+    rs = aRows; //Result Size
 
     if(aRows != bColumns){
         printf("Cannot multiply matrixes when matrix A rows are not equal to B rows.\n");
@@ -56,7 +100,7 @@ int main(int argc, char **argv) {
     printf("\n");
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    int **a = new int*[aRows];
+    a = new int*[aRows];
     for(int y = 0; y < aRows; y++){
         a[y] = new int[aColumns];
         for(int x = 0; x < aColumns; x++){
@@ -67,7 +111,7 @@ int main(int argc, char **argv) {
     printf("Initializing A took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
     t1 = std::chrono::high_resolution_clock::now();
-    int **b = new int*[bRows];
+    b = new int*[bRows];
     for(int y = 0; y < bRows; y++){
         b[y] = new int[bColumns];
         for(int x = 0; x < bColumns; x++){
@@ -77,15 +121,8 @@ int main(int argc, char **argv) {
     t2 = std::chrono::high_resolution_clock::now();
     printf("Initializing B took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
-    if(cmdArgs.debugMode){
-        printf("Matrix A:\n");
-        printMatrix(a, aRows, aColumns);
-        printf("Matrix B:\n");
-        printMatrix(b, bRows, bColumns);
-    }
-
     t1 = std::chrono::high_resolution_clock::now();
-    int **c = new int*[rs];
+    c = new int*[rs];
     for(int x = 0; x < rs; x++){
         c[x] = new int[rs];
     }
@@ -93,21 +130,22 @@ int main(int argc, char **argv) {
     printf("Initializing C took: %ld ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count());
 
     t1 = std::chrono::high_resolution_clock::now();
-    for(int y = 0; y < rs; y++){
-        for(int x = 0; x < rs; x++){
-            int sum = 0;
-            for(int z = 0; z < aColumns; z++){
-                sum += a[y][z] * b[z][x];
-            }
-            c[y][x] = sum;
-        }
+    for(int p = 0; p < cmdArgs.cpus; p++){
+        thead_array[p] = std::thread(matrixMultiply, p, cmdArgs.cpus);
+    }
+    for(int p = 0; p < cmdArgs.cpus; p++){
+        thead_array[p].join();
     }
     t2 = std::chrono::high_resolution_clock::now();
     long executionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
-    printf("The multiplication took: %ld ms\n", executionTime);
+    printf("Overall the multiplication took: %ld ms\n", executionTime);
 
     if(cmdArgs.debugMode){
-        printf("Result matrix (C):\n");
+        printf("Matrix A:\n");
+        printMatrix(a, aRows, aColumns);
+        printf("Matrix B:\n");
+        printMatrix(b, bRows, bColumns);
+        printf("Result Matrix C:\n");
         printMatrix(c, rs, rs);
     }
     printf("\nCPUs,ms\n%d,%ld\n", cmdArgs.cpus, executionTime);
