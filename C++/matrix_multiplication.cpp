@@ -4,19 +4,19 @@
 #include "helpers/CmdArguements.h"
 
 void printMatrix(int **matrix, int rows, int cols){
-    for(int x = 0; x < rows; x++){
-        for(int y = 0; y < cols; y++){
-            if(y == 0){
-                printf(" %d,%d - ", x, y);
-                printf("%d |", matrix[x][y]);
+    for(int y = 0; y < rows; y++){
+        for(int x = 0; x < cols; x++){
+            if(x == 0){
+                printf(" %d,%d - ", y, x);
+                printf("%d |", matrix[y][x]);
             }
-            else if(y == cols-1){
-                printf(" %d,%d -", x, y);
-                printf(" %d", matrix[x][y]);
+            else if(x == cols-1){
+                printf(" %d,%d -", y, x);
+                printf(" %d", matrix[y][x]);
             }
             else{
-                printf(" %d,%d - ", x, y);
-                printf(" %d |", matrix[x][y]);
+                printf(" %d,%d - ", y, x);
+                printf(" %d |", matrix[y][x]);
             }
         }
         printf("\n");
