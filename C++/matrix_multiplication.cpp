@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "helpers/CmdArguements.h"
+#include "helpers/GeneralHelpers.h"
 
 int **a; // Matrix A
 int aRows; // No. rows in Matrix A
@@ -12,27 +13,7 @@ int bRows; // No. rows in Matrix B
 int bColumns; // No. columns in Matrix B
 int **c; // Result Matrix C
 int rs; //Result Matrix Size (Result matrix is always a square)
-
-void printMatrix(int **matrix, int rows, int cols){
-    for(int y = 0; y < rows; y++){
-        for(int x = 0; x < cols; x++){
-            if(x == 0){
-                printf(" %d,%d - ", y, x);
-                printf("%d |", matrix[y][x]);
-            }
-            else if(x == cols-1){
-                printf(" %d,%d -", y, x);
-                printf(" %d", matrix[y][x]);
-            }
-            else{
-                printf(" %d,%d - ", y, x);
-                printf(" %d |", matrix[y][x]);
-            }
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
+CmdArguments cmdArgs;
 
 void matrixMultiply(){
     for(int y = 0; y < rs; y++){
@@ -47,7 +28,7 @@ void matrixMultiply(){
 }
 
 int main(int argc, char **argv) {
-    CmdArguments cmdArgs = getCmdArguements(argc, argv);
+    cmdArgs = getCmdArguements(argc, argv);
 
     int max = cmdArgs.rows;
     if(cmdArgs.cols > max){

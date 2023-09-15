@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "helpers/CmdArguements.h"
+#include "helpers/GeneralHelpers.h"
 
 int **a; // Matrix A
 int aRows; // No. rows in Matrix A
@@ -15,31 +16,19 @@ int **c; // Result Matrix C
 int rs; //Result Matrix Size (Result matrix is always a square)
 CmdArguments cmdArgs;
 
-void printMatrix(int **matrix, int rows, int cols){
-    for(int y = 0; y < rows; y++){
-        for(int x = 0; x < cols; x++){
-            if(x == 0){
-                printf(" %d,%d - ", y, x);
-                printf("%d |", matrix[y][x]);
-            }
-            else if(x == cols-1){
-                printf(" %d,%d -", y, x);
-                printf(" %d", matrix[y][x]);
-            }
-            else{
-                printf(" %d,%d - ", y, x);
-                printf(" %d |", matrix[y][x]);
-            }
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
 
 void matrixMultiply(int threadId, int numOfThreads){
     auto t1 = std::chrono::high_resolution_clock::now();
-    int startRow = 0;
-    int endRow = rs;
+    int amountPerThread = rs/numOfThreads;
+    int remainder = rs % numOfThreads;
+    int startRow = threadId*amountPerThread;
+    int endRow = (threadId+1)*amountPerThread;
+    if (remainder != 0 && threadId == numOfThreads -1){
+        endRow = rs;
+    }
+    if(cmdArgs.debugMode){
+        printf("Thread: %d, Start: %d, End: %d, AmountPerThread: %d, Remainder: %d\n", threadId, startRow, endRow, amountPerThread, remainder);
+    }
     for(int y = startRow; y < endRow; y++){
         for(int x = 0; x < rs; x++){
             int sum = 0;
@@ -51,7 +40,9 @@ void matrixMultiply(int threadId, int numOfThreads){
     }
     auto t2 = std::chrono::high_resolution_clock::now();
     long threadExecutionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
-    printf("The multiplication took: %ld ms on thread %d of %d\n", threadExecutionTime, threadId, numOfThreads);
+    if(cmdArgs.debugMode){
+        printf("The multiplication took: %ld ms on thread %d of %d\n", threadExecutionTime, threadId, numOfThreads);
+    }
 }
 
 void threadReportForAction(int threadId){
